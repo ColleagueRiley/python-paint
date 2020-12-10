@@ -15,6 +15,8 @@ class Dot():
 		self.sprite = pygame.draw.circle(screen.display,self.color,[self.x,self.y],self.radius)
 
 def checkEvents():
+	global state
+	global states
 	global dots
 	global i
 	global color
@@ -30,6 +32,7 @@ def checkEvents():
 			mousex, mousey = pygame.mouse.get_pos()
 			if mode == 1:
 				dots[f'Dot{len(dots)+1}'] = Dot(mousex,mousey,size,color)
+				states.insert(0,pickle.dumps(dots))
 			elif mode == 2:
 				for dot in dots:
 					click = dots[dot].sprite.collidepoint([mousex,mousey])
@@ -37,6 +40,7 @@ def checkEvents():
 						deldots.append(dot)
 			for dot in deldots:
 				del dots[dot]
+				states.insert(0,pickle.dumps(dots))
 			deldots = []
 
 
@@ -64,23 +68,31 @@ def checkEvents():
 				if file[-3] + file[-2] + file[-1] != 'pyp':
 					file += '.pyp'
 				pickle.dump(dots, open(file, "wb"))
-		if keys[pygame.K_LCTRL] and keys[pygame.K_l]:
+		if keys[pygame.K_LCTRL] and keys[pygame.K_d]:
 			file = easygui.fileopenbox(filetypes=['*.pyp'])
 			if file != None:
 				if file[-3] + file[-2] + file[-1] != 'pyp':
 					Question = PyZenity.Warning("That is not compatible filetype, save files have to be '.pyp' please try again with a '.pyp' file.")
 				else:
 					dots = pickle.loads(open(file,'rb').read())
-
-
-
+					states.insert(0,pickle.dumps(dots))
+		if keys[pygame.K_LSHIFT] and keys[pygame.K_LCTRL] and keys[pygame.K_z]:
+			if state-1 > 0:
+				state -= 1
+				dots = pickle.loads(states[state])
+		elif not keys[pygame.K_LSHIFT] and keys[pygame.K_LCTRL] and keys[pygame.K_z]:
+			if state+1 < len(states):
+				state += 1
+				dots = pickle.loads(states[state])
 
 i=0
+state = 0
 colors = [[0,0,0],[255,255,255],[255,0,0],[0,255,0],[0,0,255],[255,251,0],[255,105,180],[255,69,0],[128,0,128]]
 color = [0,0,0]
 size = 25
 mode = 1
 dots = {}
+states = [pickle.dumps(dots)]
 def main():
 	screen.display.fill([255,255,255])
 	for dot in dots:
