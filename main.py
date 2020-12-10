@@ -62,13 +62,20 @@ def checkEvents():
 			color = colors[i]
 		if keys[pygame.K_LCTRL] and keys[pygame.K_c]:
 			dots = {}
-		if keys[pygame.K_LCTRL] and keys[pygame.K_s]:
+		if not not keys[pygame.K_LSHIFT] and keys[pygame.K_LCTRL] and keys[pygame.K_s]:
 			file = easygui.filesavebox(filetypes='*.pyp')
 			if file != None:
 				if file[-3] + file[-2] + file[-1] != 'pyp':
 					file += '.pyp'
 				pickle.dump(dots, open(file, "wb"))
-		if keys[pygame.K_LCTRL] and keys[pygame.K_d]:
+		if keys[pygame.K_LSHIFT] and keys[pygame.K_LCTRL] and keys[pygame.K_s]:
+			file = easygui.filesavebox(filetypes=['*.png','*.jpg','*.jpeg'])
+			if file != None:
+				if file[-3] + file[-2] + file[-1] not in ['pyp','.jpg','jpeg']:
+					file += '.png'
+				pygame.image.save(screen.display, file)
+
+		if  keys[pygame.K_LCTRL] and keys[pygame.K_d]:
 			file = easygui.fileopenbox(filetypes=['*.pyp'])
 			if file != None:
 				if file[-3] + file[-2] + file[-1] != 'pyp':
@@ -76,6 +83,7 @@ def checkEvents():
 				else:
 					dots = pickle.loads(open(file,'rb').read())
 					states.insert(0,pickle.dumps(dots))
+
 		if keys[pygame.K_LSHIFT] and keys[pygame.K_LCTRL] and keys[pygame.K_z]:
 			if state-1 > 0:
 				state -= 1
