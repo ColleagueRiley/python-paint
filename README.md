@@ -31,5 +31,3 @@
 	ctrl+z: undo
 
 	ctrl+shift+z: redo
-
-BUTTONS WILL BE ADDED NEXT VERSION
